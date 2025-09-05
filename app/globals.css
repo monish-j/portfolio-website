@@ -12,11 +12,12 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Force light theme site-wide */
+
+html, body {
+  height: auto;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 body {
