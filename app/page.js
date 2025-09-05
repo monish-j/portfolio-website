@@ -1,6 +1,8 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { ChevronDown, Code, Smartphone, Zap, Mail, Phone, MapPin, Github, Linkedin, ExternalLink, CheckCircle, Star, ArrowRight, Sparkles } from 'lucide-react';
 
 export default function Home() {
@@ -56,7 +58,7 @@ export default function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Thank you for your message! I\'ll get back to you within 24 hours.');
+    alert('Thank you for your message! I will get back to you within 24 hours.');
     setFormData({ name: '', email: '', project: '', message: '' });
   };
 
@@ -244,7 +246,13 @@ export default function Home() {
                 style={{ transitionDelay: `${index * 200}ms` }}
               >
                 <div className="relative overflow-hidden">
-                  <img src={project.image} alt={project.title} className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+                 <Image 
+                  src={project.image} 
+                  alt={project.title} 
+                  width={600} 
+                  height={256} 
+                  className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" 
+                  />
                   <div className={`absolute top-4 right-4 bg-gradient-to-r ${project.gradient} text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg`}>
                     {project.status}
                   </div>
