@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -328,11 +327,11 @@ export default function Home() {
           <div className={`text-center mb-20 transform transition-all duration-1000 ${isVisible.contact ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-100 to-cyan-100 rounded-full text-emerald-700 font-medium mb-6 border border-emerald-200">
               <Mail className="w-4 h-4 mr-2" />
-              Let's Connect
+              Connect with us
             </div>
             <h2 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">Ready to Create Something Amazing?</h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              Let's discuss your vision and bring it to life with precision and creativity
+              We would love to discuss your vision and bring it to life with precision and creativity
             </p>
           </div>
           
@@ -340,7 +339,7 @@ export default function Home() {
             {/* Contact Info */}
             <div className={`transform transition-all duration-1000 ${isVisible.contact ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}>
               <div className="bg-gradient-to-br from-violet-50 to-purple-50 p-10 rounded-3xl border border-violet-200/50">
-                <h3 className="text-3xl font-bold mb-8 text-slate-900">Let's Start a Conversation</h3>
+                <h3 className="text-3xl font-bold mb-8 text-slate-900">Start a Conversation</h3>
                 <div className="space-y-8">
                   <div className="flex items-start">
                     <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
