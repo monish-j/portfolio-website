@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ChevronDown, Code, Smartphone, Zap, Mail, Phone, MapPin, Github, Linkedin, ExternalLink, CheckCircle, Star, ArrowRight, Sparkles } from 'lucide-react';
+import { ChevronDown, Code, Smartphone, Zap, Mail, Phone, MapPin, Github, Linkedin, ExternalLink, CheckCircle, Star, ArrowRight, Sparkles, Sun, Moon, Menu, X } from 'lucide-react';
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState({});
@@ -14,11 +14,12 @@ export default function Home() {
   });
 
   const [theme, setTheme] = useState('light');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
     const prefersDark = typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : false;
-    const initial = stored || (prefersDark ? 'dark' : 'light');
+    const initial = stored || 'light';
     setTheme(initial);
     if (typeof document !== 'undefined') {
       document.documentElement.classList.toggle('dark', initial === 'dark');
@@ -33,6 +34,12 @@ export default function Home() {
       localStorage.setItem('theme', theme);
     }
   }, [theme]);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    console.log('Switching from', theme, 'to', newTheme);
+    setTheme(newTheme);
+  };
 
   
 
@@ -114,7 +121,14 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div 
+      className="min-h-screen transition-colors duration-300"
+      style={{
+        background: theme === 'dark' 
+          ? 'linear-gradient(to bottom right, #0f172a, #1e293b, #334155)' 
+          : 'linear-gradient(to bottom right, #f8fafc, #ffffff, #e2e8f0)'
+      }}
+    >
       {/* Floating Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-400/20 to-purple-600/20 rounded-full blur-3xl"></div>
@@ -123,55 +137,241 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-xl z-50 border-b border-slate-200/50 shadow-lg shadow-slate-900/5">
+      <nav 
+        className="fixed top-0 w-full backdrop-blur-xl z-50 shadow-lg transition-colors duration-300"
+        style={{
+          backgroundColor: theme === 'dark' ? 'rgba(15, 23, 42, 0.8)' : 'rgba(255, 255, 255, 0.9)',
+          borderBottom: `1px solid ${theme === 'dark' ? 'rgba(71, 85, 105, 0.5)' : 'rgba(148, 163, 184, 0.3)'}`,
+          boxShadow: theme === 'dark' ? '0 10px 25px rgba(0, 0, 0, 0.2)' : '0 10px 25px rgba(15, 23, 42, 0.1)'
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
-              <div className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+              <div 
+                className="text-2xl font-bold"
+                style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+              >
                 OutcomeForge
               </div>
             </div>
-            <div className="hidden md:flex space-x-8">
-              <a href="#services" className="text-slate-700 hover:text-violet-600 transition-colors font-medium">Services</a>
-              <a href="#projects" className="text-slate-700 hover:text-violet-600 transition-colors font-medium">Work</a>
-              <a href="#contact" className="text-slate-700 hover:text-violet-600 transition-colors font-medium">Contact</a>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <a 
+                href="#services" 
+                className="hover:text-violet-600 transition-colors font-medium"
+                style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+              >
+                Services
+              </a>
+              <a 
+                href="#projects" 
+                className="hover:text-violet-600 transition-colors font-medium"
+                style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+              >
+                Work
+              </a>
+              <a 
+                href="#contact" 
+                className="hover:text-violet-600 transition-colors font-medium"
+                style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+              >
+                Contact
+              </a>
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl transition-colors"
+                style={{
+                  backgroundColor: theme === 'dark' ? '#374151' : '#e2e8f0',
+                  color: theme === 'dark' ? '#cbd5e1' : '#475569'
+                }}
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </button>
             </div>
-            <a href="#contact" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-3 rounded-2xl transition-all duration-300 font-semibold shadow-lg shadow-violet-600/25 hover:shadow-xl hover:shadow-violet-600/30 transform hover:scale-105">
+
+            {/* Mobile Navigation */}
+            <div className="md:hidden flex items-center space-x-4">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl transition-colors"
+                style={{
+                  backgroundColor: theme === 'dark' ? '#374151' : '#e2e8f0',
+                  color: theme === 'dark' ? '#cbd5e1' : '#475569'
+                }}
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </button>
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 rounded-xl transition-colors"
+                style={{
+                  backgroundColor: theme === 'dark' ? '#374151' : '#e2e8f0',
+                  color: theme === 'dark' ? '#cbd5e1' : '#475569'
+                }}
+                aria-label="Toggle mobile menu"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </button>
+            </div>
+
+            {/* Desktop CTA Button */}
+            <a 
+              href="#contact" 
+              className="hidden md:block bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-3 rounded-2xl transition-all duration-300 font-semibold shadow-lg shadow-violet-600/25 hover:shadow-xl hover:shadow-violet-600/30 transform hover:scale-105"
+            >
               Start Project
             </a>
           </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <div 
+            className="md:hidden fixed inset-0 z-30 bg-black/20"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+
+        {/* Mobile Menu Panel */}
+        {isMobileMenuOpen && (
+          <div 
+            className="md:hidden absolute top-full left-0 right-0 border-b transition-all duration-300 z-40"
+            style={{
+              backgroundColor: theme === 'dark' ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              borderBottomColor: theme === 'dark' ? 'rgba(71, 85, 105, 0.5)' : 'rgba(148, 163, 184, 0.3)',
+              backdropFilter: 'blur(20px)'
+            }}
+          >
+            <div className="px-4 py-6 space-y-4">
+              <a 
+                href="#services" 
+                className="block py-3 px-4 rounded-xl hover:text-violet-600 transition-colors font-medium text-lg"
+                style={{ 
+                  color: theme === 'dark' ? '#cbd5e1' : '#475569',
+                  backgroundColor: 'transparent'
+                }}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Services
+              </a>
+              <a 
+                href="#projects" 
+                className="block py-3 px-4 rounded-xl hover:text-violet-600 transition-colors font-medium text-lg"
+                style={{ 
+                  color: theme === 'dark' ? '#cbd5e1' : '#475569',
+                  backgroundColor: 'transparent'
+                }}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Work
+              </a>
+              <a 
+                href="#contact" 
+                className="block py-3 px-4 rounded-xl hover:text-violet-600 transition-colors font-medium text-lg"
+                style={{ 
+                  color: theme === 'dark' ? '#cbd5e1' : '#475569',
+                  backgroundColor: 'transparent'
+                }}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contact
+              </a>
+              <a 
+                href="#contact" 
+                className="block bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white py-4 px-6 rounded-2xl transition-all duration-300 font-semibold text-center shadow-lg shadow-violet-600/25"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Start Project
+              </a>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative">
         <div className="max-w-7xl mx-auto text-center">
           <div className={`transform transition-all duration-1000 ${isVisible.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} id="hero">
-            <div className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-violet-100 to-purple-100 rounded-full text-violet-700 font-medium mb-5 border border-violet-200">
+            <div 
+              className="inline-flex items-center px-3 py-1.5 rounded-full font-medium mb-5 border transition-colors"
+              style={{
+                background: theme === 'dark' 
+                  ? 'linear-gradient(to right, rgba(109, 40, 217, 0.5), rgba(147, 51, 234, 0.5))'
+                  : 'linear-gradient(to right, #ede9fe, #f3e8ff)',
+                color: theme === 'dark' ? '#c4b5fd' : '#6d28d9',
+                borderColor: theme === 'dark' ? 'rgba(124, 58, 237, 0.5)' : '#c4b5fd'
+              }}
+            >
               <Sparkles className="w-4 h-4 mr-2" />
               Premium Web Development
             </div>
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-slate-900 via-violet-900 to-slate-900 bg-clip-text text-transparent">
+              <span 
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: theme === 'dark' 
+                    ? 'linear-gradient(to right, #f1f5f9, #a78bfa, #f1f5f9)'
+                    : 'linear-gradient(to right, #0f172a, #5b21b6, #0f172a)'
+                }}
+              >
                 Websites that win customers.
               </span>
               <br />
-              <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <span 
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: theme === 'dark'
+                    ? 'linear-gradient(to right, #a78bfa, #c084fc, #f472b6)'
+                    : 'linear-gradient(to right, #7c3aed, #9333ea, #ec4899)'
+                }}
+              >
                 Built fast. Optimized to convert.
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-              I build <span className="font-bold text-violet-600">conversion‑focused websites</span> for founders and creators—fast, polished, and measurable.
+            <p 
+              className="text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed"
+              style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+            >
+              I build <span 
+                className="font-bold"
+                style={{ color: theme === 'dark' ? '#a78bfa' : '#7c3aed' }}
+              >conversion‑focused websites</span> for founders and creators—fast, polished, and measurable.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <a href="#contact" className="group bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-12 py-5 rounded-2xl text-xl font-bold transition-all duration-300 shadow-xl shadow-violet-600/25 hover:shadow-2xl hover:shadow-violet-600/35 transform hover:scale-110 inline-flex items-center justify-center ring-2 ring-violet-500/40">
+              <a href="#contact" className="group bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 sm:px-12 py-4 sm:py-5 rounded-2xl text-lg sm:text-xl font-bold transition-all duration-300 shadow-xl shadow-violet-600/25 hover:shadow-2xl hover:shadow-violet-600/35 transform hover:scale-110 inline-flex items-center justify-center ring-2 ring-violet-500/40">
                 Start Your Project
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
-              <a href="#projects" className="group bg-white/80 backdrop-blur hover:bg-white text-slate-900 px-12 py-5 rounded-2xl text-xl font-bold transition-all duration-300 shadow-xl shadow-slate-900/10 hover:shadow-2xl hover:shadow-slate-900/15 border-2 border-slate-200 hover:border-violet-300 transform hover:scale-105 inline-flex items-center justify-center ring-1 ring-slate-200/80 hover:text-violet-700">
+              <a 
+                href="#projects" 
+                className="group backdrop-blur px-8 sm:px-12 py-4 sm:py-5 rounded-2xl text-lg sm:text-xl font-bold transition-all duration-300 transform hover:scale-105 inline-flex items-center justify-center border-2 hover:text-violet-600"
+                style={{
+                  backgroundColor: theme === 'dark' ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.9)',
+                  color: theme === 'dark' ? '#f1f5f9' : '#1e293b',
+                  borderColor: theme === 'dark' ? '#475569' : '#cbd5e1',
+                  boxShadow: theme === 'dark' 
+                    ? '0 25px 50px rgba(0, 0, 0, 0.25)' 
+                    : '0 25px 50px rgba(15, 23, 42, 0.1)'
+                }}
+              >
                 View Portfolio
                 <ExternalLink className="ml-2 w-5 h-5 group-hover:scale-110 transition-transform" />
               </a>
@@ -185,12 +385,33 @@ export default function Home() {
       <section id="services" className="py-32 px-4 sm:px-6 lg:px-8 relative">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center mb-20 transform transition-all duration-1000 ${isVisible.services ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-100 to-cyan-100 rounded-full text-emerald-700 font-medium mb-6 border border-emerald-200">
+            <div 
+              className="inline-flex items-center px-4 py-2 rounded-full font-medium mb-6 border transition-colors"
+              style={{
+                background: theme === 'dark' 
+                  ? 'linear-gradient(to right, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5))'
+                  : 'linear-gradient(to right, #d1fae5, #cffafe)',
+                color: theme === 'dark' ? '#6ee7b7' : '#047857',
+                borderColor: theme === 'dark' ? 'rgba(16, 185, 129, 0.5)' : '#a7f3d0'
+              }}
+            >
               <Code className="w-4 h-4 mr-2" />
               Premium Services
             </div>
-            <h2 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">Excellence in Every Detail</h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <h2 
+              className="text-5xl md:text-6xl font-black mb-6 bg-clip-text text-transparent"
+              style={{
+                backgroundImage: theme === 'dark'
+                  ? 'linear-gradient(to right, #f1f5f9, #cbd5e1)'
+                  : 'linear-gradient(to right, #0f172a, #374151)'
+              }}
+            >
+              Excellence in Every Detail
+            </h2>
+            <p 
+              className="text-xl max-w-3xl mx-auto"
+              style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+            >
               Crafting digital experiences that combine stunning visuals with flawless functionality
             </p>
           </div>
@@ -199,17 +420,38 @@ export default function Home() {
             {services.map((service, index) => (
               <div 
                 key={index}
-                className={`group bg-white/70 backdrop-blur-sm p-10 rounded-3xl border border-slate-200/50 hover:border-slate-300/50 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 shadow-xl shadow-slate-900/5 hover:shadow-2xl hover:shadow-slate-900/10 ${isVisible.services ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
-                style={{ transitionDelay: `${index * 200}ms` }}
+                className={`group backdrop-blur-sm p-10 rounded-3xl border transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 ${isVisible.services ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                style={{
+                  backgroundColor: theme === 'dark' ? 'rgba(30, 41, 59, 0.7)' : 'rgba(255, 255, 255, 0.8)',
+                  borderColor: theme === 'dark' ? 'rgba(71, 85, 105, 0.5)' : 'rgba(203, 213, 225, 0.5)',
+                  boxShadow: theme === 'dark' 
+                    ? '0 25px 50px rgba(0, 0, 0, 0.2)' 
+                    : '0 25px 50px rgba(15, 23, 42, 0.05)',
+                  transitionDelay: `${index * 200}ms`
+                }}
               >
                 <div className={`w-20 h-20 bg-gradient-to-br ${service.gradient} rounded-3xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                   {service.icon}
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-slate-900">{service.title}</h3>
-                <p className="text-slate-600 mb-8 text-lg leading-relaxed">{service.description}</p>
+                <h3 
+                  className="text-2xl font-bold mb-4"
+                  style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                >
+                  {service.title}
+                </h3>
+                <p 
+                  className="mb-8 text-lg leading-relaxed"
+                  style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+                >
+                  {service.description}
+                </p>
                 <ul className="space-y-3">
                   {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center text-slate-700 font-medium">
+                    <li 
+                      key={idx} 
+                      className="flex items-center font-medium"
+                      style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+                    >
                       <div className={`w-6 h-6 bg-gradient-to-br ${service.gradient} rounded-full flex items-center justify-center mr-3 shadow-sm`}>
                         <CheckCircle className="w-4 h-4 text-white" />
                       </div>
@@ -224,15 +466,44 @@ export default function Home() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white relative">
+      <section 
+        id="projects" 
+        className="py-32 px-4 sm:px-6 lg:px-8 relative"
+        style={{
+          background: theme === 'dark'
+            ? 'linear-gradient(to bottom, #1e293b, #0f172a)'
+            : 'linear-gradient(to bottom, #f8fafc, #ffffff)'
+        }}
+      >
         <div className="max-w-7xl mx-auto">
           <div className={`text-center mb-20 transform transition-all duration-1000 ${isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full text-blue-700 font-medium mb-6 border border-blue-200">
+            <div 
+              className="inline-flex items-center px-4 py-2 rounded-full font-medium mb-6 border transition-colors"
+              style={{
+                background: theme === 'dark' 
+                  ? 'linear-gradient(to right, rgba(59, 130, 246, 0.5), rgba(99, 102, 241, 0.5))'
+                  : 'linear-gradient(to right, #dbeafe, #e0e7ff)',
+                color: theme === 'dark' ? '#93c5fd' : '#1d4ed8',
+                borderColor: theme === 'dark' ? 'rgba(59, 130, 246, 0.5)' : '#bfdbfe'
+              }}
+            >
               <Star className="w-4 h-4 mr-2" />
               Featured Work
             </div>
-            <h2 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">Projects That Deliver Results</h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <h2 
+              className="text-5xl md:text-6xl font-black mb-6 bg-clip-text text-transparent"
+              style={{
+                backgroundImage: theme === 'dark'
+                  ? 'linear-gradient(to right, #f1f5f9, #cbd5e1)'
+                  : 'linear-gradient(to right, #0f172a, #374151)'
+              }}
+            >
+              Projects That Deliver Results
+            </h2>
+            <p 
+              className="text-xl max-w-3xl mx-auto"
+              style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+            >
               Real projects, real results—driving growth for businesses worldwide
             </p>
           </div>
@@ -241,7 +512,14 @@ export default function Home() {
             {projects.map((project, index) => (
               <div 
                 key={index}
-                className={`group bg-white rounded-3xl overflow-hidden border border-slate-200/50 hover:border-slate-300/50 transition-all duration-500 transform hover:scale-105 hover:-translate-y-4 shadow-xl shadow-slate-900/5 hover:shadow-2xl hover:shadow-slate-900/15 ${isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                className={`group rounded-3xl overflow-hidden border transition-all duration-500 transform hover:scale-105 hover:-translate-y-4 ${isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                style={{
+                  backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
+                  borderColor: theme === 'dark' ? 'rgba(71, 85, 105, 0.5)' : 'rgba(203, 213, 225, 0.5)',
+                  boxShadow: theme === 'dark' 
+                    ? '0 25px 50px rgba(0, 0, 0, 0.2)' 
+                    : '0 25px 50px rgba(15, 23, 42, 0.05)'
+                }}
                 style={{ transitionDelay: `${index * 200}ms` }}
               >
                 <div className="relative overflow-hidden">
@@ -258,11 +536,31 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
                 <div className="p-8">
-                  <h3 className="text-2xl font-bold mb-3 text-slate-900 group-hover:text-violet-600 transition-colors">{project.title}</h3>
-                  <p className="text-slate-600 mb-6 text-lg leading-relaxed">{project.description}</p>
+                  <h3 
+                    className="text-2xl font-bold mb-3 group-hover:text-violet-600 transition-colors"
+                    style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                  >
+                    {project.title}
+                  </h3>
+                  <p 
+                    className="mb-6 text-lg leading-relaxed"
+                    style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+                  >
+                    {project.description}
+                  </p>
                   <div className="flex flex-wrap gap-2 mb-6">
                     {project.tech.map((tech, idx) => (
-                      <span key={idx} className="bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 px-4 py-2 rounded-full text-sm font-medium border border-slate-200">
+                      <span 
+                        key={idx} 
+                        className="px-4 py-2 rounded-full text-sm font-medium border"
+                        style={{
+                          background: theme === 'dark' 
+                            ? 'linear-gradient(to right, #374151, #4b5563)'
+                            : 'linear-gradient(to right, #f1f5f9, #e2e8f0)',
+                          color: theme === 'dark' ? '#cbd5e1' : '#475569',
+                          borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1'
+                        }}
+                      >
                         {tech}
                       </span>
                     ))}
@@ -278,7 +576,10 @@ export default function Home() {
                       <ArrowRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                     </a>
                   ) : (
-                    <span className="text-slate-500 font-semibold text-lg inline-flex items-center">
+                    <span 
+                      className="font-semibold text-lg inline-flex items-center"
+                      style={{ color: theme === 'dark' ? '#94a3b8' : '#64748b' }}
+                    >
                       Case study coming soon
                     </span>
                   )}
@@ -325,12 +626,33 @@ export default function Home() {
       <section id="contact" className="py-32 px-4 sm:px-6 lg:px-8 relative">
         <div className="max-w-6xl mx-auto">
           <div className={`text-center mb-20 transform transition-all duration-1000 ${isVisible.contact ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-100 to-cyan-100 rounded-full text-emerald-700 font-medium mb-6 border border-emerald-200">
+            <div 
+              className="inline-flex items-center px-4 py-2 rounded-full font-medium mb-6 border transition-colors"
+              style={{
+                background: theme === 'dark' 
+                  ? 'linear-gradient(to right, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5))'
+                  : 'linear-gradient(to right, #d1fae5, #cffafe)',
+                color: theme === 'dark' ? '#6ee7b7' : '#047857',
+                borderColor: theme === 'dark' ? 'rgba(16, 185, 129, 0.5)' : '#a7f3d0'
+              }}
+            >
               <Mail className="w-4 h-4 mr-2" />
               Connect with us
             </div>
-            <h2 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">Ready to Create Something Amazing?</h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <h2 
+              className="text-5xl md:text-6xl font-black mb-6 bg-clip-text text-transparent"
+              style={{
+                backgroundImage: theme === 'dark'
+                  ? 'linear-gradient(to right, #f1f5f9, #cbd5e1)'
+                  : 'linear-gradient(to right, #0f172a, #374151)'
+              }}
+            >
+              Ready to Create Something Amazing?
+            </h2>
+            <p 
+              className="text-xl max-w-3xl mx-auto"
+              style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+            >
               We would love to discuss your vision and bring it to life with precision and creativity
             </p>
           </div>
@@ -338,16 +660,36 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-16">
             {/* Contact Info */}
             <div className={`transform transition-all duration-1000 ${isVisible.contact ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}>
-              <div className="bg-gradient-to-br from-violet-50 to-purple-50 p-10 rounded-3xl border border-violet-200/50">
-                <h3 className="text-3xl font-bold mb-8 text-slate-900">Start a Conversation</h3>
+              <div 
+                className="p-10 rounded-3xl border transition-colors"
+                style={{
+                  background: theme === 'dark'
+                    ? 'linear-gradient(to bottom right, rgba(109, 40, 217, 0.2), rgba(147, 51, 234, 0.2))'
+                    : 'linear-gradient(to bottom right, #faf5ff, #f3e8ff)',
+                  borderColor: theme === 'dark' ? 'rgba(124, 58, 237, 0.5)' : 'rgba(196, 181, 253, 0.5)'
+                }}
+              >
+                <h3 
+                  className="text-3xl font-bold mb-8"
+                  style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                >
+                  Start a Conversation
+                </h3>
                 <div className="space-y-8">
                   <div className="flex items-start">
                     <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
                       <Mail className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-lg text-slate-900 mb-1">Email</div>
-                      <div className="text-slate-600">hello@outcomeforge.dev</div>
+                      <div 
+                        className="font-bold text-lg mb-1"
+                        style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                      >
+                        Email
+                      </div>
+                      <div style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}>
+                        hello@outcomeforge.dev
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-start">
@@ -355,8 +697,15 @@ export default function Home() {
                       <Phone className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-lg text-slate-900 mb-1">Response Time</div>
-                      <div className="text-slate-600">Within 2 hours, guaranteed</div>
+                      <div 
+                        className="font-bold text-lg mb-1"
+                        style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                      >
+                        Response Time
+                      </div>
+                      <div style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}>
+                        Within 2 hours, guaranteed
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-start">
@@ -364,20 +713,52 @@ export default function Home() {
                       <MapPin className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-lg text-slate-900 mb-1">Global Service</div>
-                      <div className="text-slate-600">Worldwide project delivery</div>
+                      <div 
+                        className="font-bold text-lg mb-1"
+                        style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                      >
+                        Global Service
+                      </div>
+                      <div style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}>
+                        Worldwide project delivery
+                      </div>
                     </div>
                   </div>
                 </div>
                 
                 <div className="mt-10 pt-8 border-t border-violet-200">
-                  <h4 className="font-bold text-lg text-slate-900 mb-4">Follow the Journey</h4>
+                  <h4 
+                    className="font-bold text-lg mb-4"
+                    style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                  >
+                    Follow the Journey
+                  </h4>
                   <div className="flex space-x-4">
-                    <a href="#" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border border-slate-200">
-                      <Github className="w-5 h-5 text-slate-700" />
+                    <a 
+                      href="#" 
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border"
+                      style={{
+                        backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
+                        borderColor: theme === 'dark' ? '#475569' : '#cbd5e1'
+                      }}
+                    >
+                      <Github 
+                        className="w-5 h-5"
+                        style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+                      />
                     </a>
-                    <a href="#" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border border-slate-200">
-                      <Linkedin className="w-5 h-5 text-slate-700" />
+                    <a 
+                      href="#" 
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border"
+                      style={{
+                        backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
+                        borderColor: theme === 'dark' ? '#475569' : '#cbd5e1'
+                      }}
+                    >
+                      <Linkedin 
+                        className="w-5 h-5"
+                        style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
+                      />
                     </a>
                   </div>
                 </div>
@@ -386,33 +767,68 @@ export default function Home() {
             
             {/* Contact Form */}
             <div className={`transform transition-all duration-1000 ${isVisible.contact ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`} id="contact">
-              <div className="bg-white p-10 rounded-3xl shadow-2xl shadow-slate-900/10 border border-slate-200/50 space-y-6">
+              <div 
+                className="p-10 rounded-3xl shadow-2xl border space-y-6 transition-colors"
+                style={{
+                  backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
+                  borderColor: theme === 'dark' ? 'rgba(71, 85, 105, 0.5)' : 'rgba(203, 213, 225, 0.5)',
+                  boxShadow: theme === 'dark' 
+                    ? '0 25px 50px rgba(0, 0, 0, 0.2)' 
+                    : '0 25px 50px rgba(15, 23, 42, 0.1)'
+                }}
+              >
                 <div>
-                  <label className="block text-sm font-bold text-slate-900 mb-3">Full Name</label>
+                  <label 
+                    className="block text-sm font-bold mb-3"
+                    style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                  >
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 text-slate-900 font-medium"
+                    className="w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium"
+                    style={{
+                      backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc',
+                      borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1',
+                      color: theme === 'dark' ? '#f1f5f9' : '#1e293b'
+                    }}
                     placeholder="John Smith"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-900 mb-3">Email Address</label>
+                  <label 
+                    className="block text-sm font-bold mb-3"
+                    style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                  >Email Address</label>
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 text-slate-900 font-medium"
+                    className="w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium"
+                    style={{
+                      backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc',
+                      borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1',
+                      color: theme === 'dark' ? '#f1f5f9' : '#1e293b'
+                    }}
                     placeholder="john@company.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-900 mb-3">Project Type</label>
+                  <label 
+                    className="block text-sm font-bold mb-3"
+                    style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                  >Project Type</label>
                   <select
                     value={formData.project}
                     onChange={(e) => setFormData({...formData, project: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 text-slate-900 font-medium"
+                    className="w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium"
+                    style={{
+                      backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc',
+                      borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1',
+                      color: theme === 'dark' ? '#f1f5f9' : '#1e293b'
+                    }}
                   >
                     <option value="">Select your project type</option>
                     <option value="portfolio">Premium Portfolio</option>
@@ -424,13 +840,21 @@ export default function Home() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-900 mb-3">Project Details</label>
+                  <label 
+                    className="block text-sm font-bold mb-3"
+                    style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
+                  >Project Details</label>
                   <textarea
                     rows="5"
                     value={formData.message}
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
                     placeholder="Tell me about your vision, goals, and timeline..."
-                    className="w-full px-6 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 text-slate-900 font-medium resize-none"
+                    className="w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium resize-none"
+                    style={{
+                      backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc',
+                      borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1',
+                      color: theme === 'dark' ? '#f1f5f9' : '#1e293b'
+                    }}
                   ></textarea>
                 </div>
                 <button

@@ -5,14 +5,17 @@
   --foreground: #171717;
 }
 
+:root.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
-
-/* Force light theme site-wide */
 
 html, body {
   height: auto;
