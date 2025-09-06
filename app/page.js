@@ -518,9 +518,9 @@ export default function Home() {
                   borderColor: theme === 'dark' ? 'rgba(71, 85, 105, 0.5)' : 'rgba(203, 213, 225, 0.5)',
                   boxShadow: theme === 'dark' 
                     ? '0 25px 50px rgba(0, 0, 0, 0.2)' 
-                    : '0 25px 50px rgba(15, 23, 42, 0.05)'
+                    : '0 25px 50px rgba(15, 23, 42, 0.05)',
+                  transitionDelay: `${index * 200}ms`
                 }}
-                style={{ transitionDelay: `${index * 200}ms` }}
               >
                 <div className="relative overflow-hidden">
                  <Image 
