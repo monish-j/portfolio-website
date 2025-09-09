@@ -37,7 +37,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2500); // Show loader for 2.5 seconds
+    }, 2800); // Show loader for 2.8 seconds
 
     return () => clearTimeout(timer);
   }, []);
@@ -193,50 +193,48 @@ export default function Home() {
 
   return (
     <>
-      {/* Loading Screen */}
-      {isLoading && (
-        <div 
-          className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 ${isLoading ? 'opacity-100' : 'opacity-0'}`}
-          style={{
-            background: theme === 'dark' 
-              ? 'linear-gradient(135deg, #0f172a, #1e293b, #334155)' 
-              : 'linear-gradient(135deg, #f8fafc, #ffffff, #e2e8f0)'
-          }}
-        >
-          <div className="flex flex-col items-center">
-            {/* Loading Spinner */}
-            <div className="relative w-16 h-16 mb-6">
-              <div className="absolute inset-0 rounded-full border-4 border-gray-200 opacity-20"></div>
-              <div 
-                className="absolute inset-0 rounded-full border-4 border-transparent animate-spin"
+      {/* Full-Screen Loading Overlay */}
+      <div 
+        className={`fixed inset-0 z-[9999] flex items-center justify-center transition-all duration-700 ${isLoading ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+        style={{
+          background: theme === 'dark' 
+            ? 'linear-gradient(135deg, #0f172a, #1e293b, #334155)' 
+            : 'linear-gradient(135deg, #f8fafc, #ffffff, #e2e8f0)'
+        }}
+      >
+        <div className="flex flex-col items-center">
+          {/* Loading Spinner */}
+          <div className="relative w-16 h-16 mb-6">
+            <div className="absolute inset-0 rounded-full border-4 border-gray-200 opacity-20"></div>
+            <div 
+              className="absolute inset-0 rounded-full border-4 border-transparent animate-spin"
+              style={{
+                borderTopColor: '#7c3aed',
+                borderRightColor: '#9333ea',
+                animationDuration: '1s'
+              }}
+            ></div>
+          </div>
+          
+          {/* Loading Dots */}
+          <div className="flex space-x-2">
+            {[0, 1, 2].map((dot) => (
+              <div
+                key={dot}
+                className="w-3 h-3 rounded-full animate-pulse"
                 style={{
-                  borderTopColor: '#7c3aed',
-                  borderRightColor: '#9333ea',
-                  animationDuration: '1s'
+                  background: 'linear-gradient(135deg, #7c3aed, #9333ea)',
+                  animationDelay: `${dot * 0.2}s`,
+                  animationDuration: '1.2s'
                 }}
               ></div>
-            </div>
-            
-            {/* Loading Dots */}
-            <div className="flex space-x-2">
-              {[0, 1, 2].map((dot) => (
-                <div
-                  key={dot}
-                  className="w-3 h-3 rounded-full animate-pulse"
-                  style={{
-                    background: 'linear-gradient(135deg, #7c3aed, #9333ea)',
-                    animationDelay: `${dot * 0.2}s`,
-                    animationDuration: '1.2s'
-                  }}
-                ></div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
-      )}
+      </div>
 
       <div 
-        className="min-h-screen transition-colors duration-300"
+        className={`min-h-screen transition-all duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
         style={{
           background: theme === 'dark' 
             ? 'linear-gradient(to bottom right, #0f172a, #1e293b, #334155)' 
