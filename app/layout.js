@@ -12,8 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Monis - Full Stack Developer Portfolio",
-  description: "Professional web developer specializing in Next.js, React, and modern web technologies. View my portfolio of high-performance websites and applications.",
+  title: "Monish - Full Stack Developer | MonishDev",
+  description: "I build modern websites and applications that help businesses grow online. Clean code, beautiful design, measurable results.",
 };
 
 export default function RootLayout({ children }) {

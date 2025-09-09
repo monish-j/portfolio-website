@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { gsap } from 'gsap';
 import { ChevronDown, Code, Smartphone, Zap, Mail, Phone, MapPin, Github, Linkedin, ExternalLink, CheckCircle, Star, ArrowRight, Sparkles, Sun, Moon, Menu, X } from 'lucide-react';
 
 export default function Home() {
@@ -15,6 +16,12 @@ export default function Home() {
 
   const [theme, setTheme] = useState('light');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Refs for GSAP animations
+  const heroHeadingRef = useRef(null);
+  const heroSubtitleRef = useRef(null);
+  const heroDescriptionRef = useRef(null);
 
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
@@ -25,6 +32,68 @@ export default function Home() {
       document.documentElement.classList.toggle('dark', initial === 'dark');
     }
   }, []);
+
+  // Loading Animation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500); // Show loader for 2.5 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // GSAP Hero Animation - triggers after loading completes
+  useEffect(() => {
+    if (!isLoading) {
+      // Check if user prefers reduced motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      const ctx = gsap.context(() => {
+        const elements = [heroHeadingRef.current, heroSubtitleRef.current, heroDescriptionRef.current];
+        
+        if (prefersReducedMotion) {
+          // If reduced motion is preferred, just show elements immediately
+          gsap.set(elements, { opacity: 1, y: 0 });
+          return;
+        }
+
+        // Optimize for performance
+        gsap.set(elements, {
+          opacity: 0,
+          y: 30,
+          willChange: "transform"
+        });
+
+        // Animate in sequence with staggered timing
+        const tl = gsap.timeline({ delay: 0.3 });
+        
+        tl.to(heroHeadingRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out"
+        })
+        .to(heroSubtitleRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out"
+        }, "-=0.6")
+        .to(heroDescriptionRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          onComplete: () => {
+            // Clear will-change after animation completes
+            gsap.set(elements, { willChange: "auto" });
+          }
+        }, "-=0.6");
+      });
+
+      return () => ctx.revert(); // Cleanup
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -123,14 +192,57 @@ export default function Home() {
   ];
 
   return (
-    <div 
-      className="min-h-screen transition-colors duration-300"
-      style={{
-        background: theme === 'dark' 
-          ? 'linear-gradient(to bottom right, #0f172a, #1e293b, #334155)' 
-          : 'linear-gradient(to bottom right, #f8fafc, #ffffff, #e2e8f0)'
-      }}
-    >
+    <>
+      {/* Loading Screen */}
+      {isLoading && (
+        <div 
+          className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 ${isLoading ? 'opacity-100' : 'opacity-0'}`}
+          style={{
+            background: theme === 'dark' 
+              ? 'linear-gradient(135deg, #0f172a, #1e293b, #334155)' 
+              : 'linear-gradient(135deg, #f8fafc, #ffffff, #e2e8f0)'
+          }}
+        >
+          <div className="flex flex-col items-center">
+            {/* Loading Spinner */}
+            <div className="relative w-16 h-16 mb-6">
+              <div className="absolute inset-0 rounded-full border-4 border-gray-200 opacity-20"></div>
+              <div 
+                className="absolute inset-0 rounded-full border-4 border-transparent animate-spin"
+                style={{
+                  borderTopColor: '#7c3aed',
+                  borderRightColor: '#9333ea',
+                  animationDuration: '1s'
+                }}
+              ></div>
+            </div>
+            
+            {/* Loading Dots */}
+            <div className="flex space-x-2">
+              {[0, 1, 2].map((dot) => (
+                <div
+                  key={dot}
+                  className="w-3 h-3 rounded-full animate-pulse"
+                  style={{
+                    background: 'linear-gradient(135deg, #7c3aed, #9333ea)',
+                    animationDelay: `${dot * 0.2}s`,
+                    animationDuration: '1.2s'
+                  }}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div 
+        className="min-h-screen transition-colors duration-300"
+        style={{
+          background: theme === 'dark' 
+            ? 'linear-gradient(to bottom right, #0f172a, #1e293b, #334155)' 
+            : 'linear-gradient(to bottom right, #f8fafc, #ffffff, #e2e8f0)'
+        }}
+      >
       {/* Floating Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-400/20 to-purple-600/20 rounded-full blur-3xl"></div>
@@ -149,15 +261,9 @@ export default function Home() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center">
               <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div 
-                className="text-2xl font-bold"
-                style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
-              >
-                OutcomeForge
               </div>
             </div>
             {/* Desktop Navigation */}
@@ -323,9 +429,9 @@ export default function Home() {
               }}
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              Premium Web Development
+              Web Development
             </div>
-            <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+            <h1 ref={heroHeadingRef} className="text-5xl md:text-7xl font-black mb-4 leading-tight">
               <span 
                 className="bg-clip-text text-transparent"
                 style={{
@@ -334,28 +440,22 @@ export default function Home() {
                     : 'linear-gradient(to right, #0f172a, #5b21b6, #0f172a)'
                 }}
               >
-                Websites that win customers.
-              </span>
-              <br />
-              <span 
-                className="bg-clip-text text-transparent"
-                style={{
-                  backgroundImage: theme === 'dark'
-                    ? 'linear-gradient(to right, #a78bfa, #c084fc, #f472b6)'
-                    : 'linear-gradient(to right, #7c3aed, #9333ea, #ec4899)'
-                }}
-              >
-                Built fast. Optimized to convert.
+                Hi, I&apos;m Monish
               </span>
             </h1>
+            <h2 
+              ref={heroSubtitleRef}
+              className="text-2xl md:text-3xl font-bold mb-6"
+              style={{ color: theme === 'dark' ? '#a78bfa' : '#7c3aed' }}
+            >
+              Full-Stack Developer
+            </h2>
             <p 
+              ref={heroDescriptionRef}
               className="text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed"
               style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
             >
-              I build <span 
-                className="font-bold"
-                style={{ color: theme === 'dark' ? '#a78bfa' : '#7c3aed' }}
-              >conversion‑focused websites</span> for founders and creators—fast, polished, and measurable.
+              I build modern websites and applications that help businesses grow online. Clean code, beautiful design, measurable results.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <a href="#contact" className="group bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 sm:px-12 py-4 sm:py-5 rounded-2xl text-lg sm:text-xl font-bold transition-all duration-300 shadow-xl shadow-violet-600/25 hover:shadow-2xl hover:shadow-violet-600/35 transform hover:scale-110 inline-flex items-center justify-center ring-2 ring-violet-500/40">
@@ -398,7 +498,7 @@ export default function Home() {
               }}
             >
               <Code className="w-4 h-4 mr-2" />
-              Premium Services
+              What I Build
             </div>
             <h2 
               className="text-5xl md:text-6xl font-black mb-6 bg-clip-text text-transparent"
@@ -490,7 +590,7 @@ export default function Home() {
               }}
             >
               <Star className="w-4 h-4 mr-2" />
-              Featured Work
+              Project Showcase
             </div>
             <h2 
               className="text-5xl md:text-6xl font-black mb-6 bg-clip-text text-transparent"
@@ -500,13 +600,13 @@ export default function Home() {
                   : 'linear-gradient(to right, #0f172a, #374151)'
               }}
             >
-              Projects That Deliver Results
+              Project Showcase
             </h2>
             <p 
               className="text-xl max-w-3xl mx-auto"
               style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
             >
-              Real projects, real results—driving growth for businesses worldwide
+              Sample websites showcasing different industries and design approaches
             </p>
           </div>
           
@@ -600,15 +700,15 @@ export default function Home() {
         ></div>
         <div className="max-w-7xl mx-auto relative">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Proven Track Record</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Why Work With Me</h2>
             <p className="text-xl text-purple-200">Numbers that speak for themselves</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { number: "150+", label: "Projects Delivered", icon: <Code className="w-8 h-8 text-white" /> },
-              { number: "95+", label: "Happy Clients", icon: <Star className="w-8 h-8 text-white" /> },
-              { number: "99.9%", label: "Uptime Record", icon: <Zap className="w-8 h-8 text-white" /> },
-              { number: "2hr", label: "Avg Response", icon: <Mail className="w-8 h-8 text-white" /> }
+              { number: "5+", label: "Technologies Used", icon: <Code className="w-8 h-8 text-white" /> },
+              { number: "48hr", label: "Project Delivery", icon: <Zap className="w-8 h-8 text-white" /> },
+              { number: "24/7", label: "Availability", icon: <Star className="w-8 h-8 text-white" /> },
+              { number: "2hr", label: "Response Time", icon: <Mail className="w-8 h-8 text-white" /> }
             ].map((stat, index) => (
               <div key={index} className="text-center group">
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 group-hover:bg-white/20 transition-all duration-300 transform group-hover:scale-105">
@@ -690,7 +790,7 @@ export default function Home() {
                         Email
                       </div>
                       <div style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}>
-                        hello@outcomeforge.dev
+                        hello.monishdev@gmail.com
                       </div>
                     </div>
                   </div>
@@ -879,7 +979,7 @@ export default function Home() {
               <Sparkles className="w-7 h-7 text-white" />
             </div>
             <div className="text-3xl font-bold text-white">
-              OutcomeForge
+              MonishDev
             </div>
           </div>
           <p className="text-slate-400 mb-8 text-lg">
@@ -887,11 +987,12 @@ export default function Home() {
           </p>
           <div className="border-t border-slate-800 pt-8">
             <p className="text-slate-500">
-              © 2024 OutcomeForge. All rights reserved. Built with passion and precision.
+              © 2024 MonishDev. All rights reserved. Built with passion and precision.
             </p>
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }
