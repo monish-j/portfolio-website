@@ -903,7 +903,9 @@ export default function Home() {
                   </h4>
                   <div className="flex space-x-4">
                     <a 
-                      href="#" 
+                      href="https://github.com/monish-j" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border"
                       style={{
                         backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
@@ -916,7 +918,9 @@ export default function Home() {
                       />
                     </a>
                     <a 
-                      href="#" 
+                      href="https://www.linkedin.com/in/monish-494147213/" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border"
                       style={{
                         backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
