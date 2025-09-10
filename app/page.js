@@ -17,6 +17,9 @@ export default function Home() {
   const [theme, setTheme] = useState('light');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [formStatus, setFormStatus] = useState(''); // 'success', 'error', or ''
+  const [formErrors, setFormErrors] = useState({});
 
   // Refs for GSAP animations
   const heroHeadingRef = useRef(null);
@@ -131,10 +134,75 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.project) {
+      errors.project = 'Please select a project type';
+    }
+    
+    if (!formData.message.trim()) {
+      errors.message = 'Project details are required';
+    } else if (formData.message.trim().length < 10) {
+      errors.message = 'Please provide more details (minimum 10 characters)';
+    }
+    
+    return errors;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('Thank you for your message! I will get back to you within 24 hours.');
-    setFormData({ name: '', email: '', project: '', message: '' });
+    
+    // Reset previous status and errors
+    setFormStatus('');
+    setFormErrors({});
+    
+    // Validate form
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
+    // Set loading state
+    setFormSubmitting(true);
+    
+    try {
+      const response = await fetch('https://formspree.io/f/movnrwgj', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          project: formData.project,
+          message: formData.message,
+        }),
+      });
+      
+      if (response.ok) {
+        setFormStatus('success');
+        setFormData({ name: '', email: '', project: '', message: '' });
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      setFormStatus('error');
+      console.error('Form submission error:', error);
+    } finally {
+      setFormSubmitting(false);
+    }
   };
 
   const services = [
@@ -888,14 +956,17 @@ export default function Home() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium"
+                    className={`w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium ${formErrors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                     style={{
                       backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc',
-                      borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1',
+                      borderColor: formErrors.name ? '#ef4444' : (theme === 'dark' ? '#4b5563' : '#cbd5e1'),
                       color: theme === 'dark' ? '#f1f5f9' : '#1e293b'
                     }}
                     placeholder="John Smith"
                   />
+                  {formErrors.name && (
+                    <p className="text-red-500 text-sm mt-2 font-medium">{formErrors.name}</p>
+                  )}
                 </div>
                 <div>
                   <label 
@@ -906,14 +977,17 @@ export default function Home() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    className="w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium"
+                    className={`w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium ${formErrors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                     style={{
                       backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc',
-                      borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1',
+                      borderColor: formErrors.email ? '#ef4444' : (theme === 'dark' ? '#4b5563' : '#cbd5e1'),
                       color: theme === 'dark' ? '#f1f5f9' : '#1e293b'
                     }}
                     placeholder="john@company.com"
                   />
+                  {formErrors.email && (
+                    <p className="text-red-500 text-sm mt-2 font-medium">{formErrors.email}</p>
+                  )}
                 </div>
                 <div>
                   <label 
@@ -923,10 +997,10 @@ export default function Home() {
                   <select
                     value={formData.project}
                     onChange={(e) => setFormData({...formData, project: e.target.value})}
-                    className="w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium"
+                    className={`w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium ${formErrors.project ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                     style={{
                       backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc',
-                      borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1',
+                      borderColor: formErrors.project ? '#ef4444' : (theme === 'dark' ? '#4b5563' : '#cbd5e1'),
                       color: theme === 'dark' ? '#f1f5f9' : '#1e293b'
                     }}
                   >
@@ -938,6 +1012,9 @@ export default function Home() {
                     <option value="webapp">Web Application</option>
                     <option value="other">Custom Solution</option>
                   </select>
+                  {formErrors.project && (
+                    <p className="text-red-500 text-sm mt-2 font-medium">{formErrors.project}</p>
+                  )}
                 </div>
                 <div>
                   <label 
@@ -949,19 +1026,61 @@ export default function Home() {
                     value={formData.message}
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
                     placeholder="Tell me about your vision, goals, and timeline..."
-                    className="w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium resize-none"
+                    className={`w-full px-6 py-4 border-2 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 font-medium resize-none ${formErrors.message ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                     style={{
                       backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc',
-                      borderColor: theme === 'dark' ? '#4b5563' : '#cbd5e1',
+                      borderColor: formErrors.message ? '#ef4444' : (theme === 'dark' ? '#4b5563' : '#cbd5e1'),
                       color: theme === 'dark' ? '#f1f5f9' : '#1e293b'
                     }}
                   ></textarea>
+                  {formErrors.message && (
+                    <p className="text-red-500 text-sm mt-2 font-medium">{formErrors.message}</p>
+                  )}
                 </div>
+                
+                {/* Success Message */}
+                {formStatus === 'success' && (
+                  <div className="p-6 rounded-2xl border-2 border-green-500 bg-green-50 dark:bg-green-900/20">
+                    <div className="flex items-center">
+                      <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                      <div>
+                        <h4 className="font-bold text-green-800 dark:text-green-300">Message Sent Successfully!</h4>
+                        <p className="text-green-700 dark:text-green-400 mt-1">Thank you for reaching out! I'll get back to you within 24 hours.</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Error Message */}
+                {formStatus === 'error' && (
+                  <div className="p-6 rounded-2xl border-2 border-red-500 bg-red-50 dark:bg-red-900/20">
+                    <div className="flex items-center">
+                      <X className="w-6 h-6 text-red-500 mr-3" />
+                      <div>
+                        <h4 className="font-bold text-red-800 dark:text-red-300">Something went wrong</h4>
+                        <p className="text-red-700 dark:text-red-400 mt-1">Please try again or contact me directly at hello.monishdev@gmail.com</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <button
                   onClick={handleSubmit}
-                  className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-bold py-5 px-8 rounded-2xl transition-all duration-300 shadow-xl shadow-violet-600/25 hover:shadow-2xl hover:shadow-violet-600/35 transform hover:scale-105"
+                  disabled={formSubmitting}
+                  className={`w-full font-bold py-5 px-8 rounded-2xl transition-all duration-300 shadow-xl transform ${
+                    formSubmitting 
+                      ? 'bg-gray-400 cursor-not-allowed opacity-70' 
+                      : 'bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-violet-600/25 hover:shadow-2xl hover:shadow-violet-600/35 hover:scale-105'
+                  } text-white`}
                 >
-                  Send Project Details
+                  {formSubmitting ? (
+                    <div className="flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                      Sending...
+                    </div>
+                  ) : (
+                    'Send Project Details'
+                  )}
                 </button>
               </div>
             </div>
