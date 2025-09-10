@@ -1045,7 +1045,7 @@ export default function Home() {
                       <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
                       <div>
                         <h4 className="font-bold text-green-800 dark:text-green-300">Message Sent Successfully!</h4>
-                        <p className="text-green-700 dark:text-green-400 mt-1">Thank you for reaching out! I'll get back to you within 24 hours.</p>
+                        <p className="text-green-700 dark:text-green-400 mt-1">Thank you for reaching out! I&apos;ll get back to you within 24 hours.</p>
                       </div>
                     </div>
                   </div>
