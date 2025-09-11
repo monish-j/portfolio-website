@@ -234,7 +234,7 @@ export default function Home() {
       title: "Bella Vista Restaurant",
       description: "Elegant restaurant experience with menu, booking, and immersive visuals.",
       image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop",
-      tech: ["Next.js", "Tailwind", "Framer Motion"],
+      tech: ["Next.js", "Tailwind", "Responsive"],
       status: "Live Site",
       gradient: "from-rose-400 to-pink-400",
       url: "https://bella-vista-restaurant-9cal.vercel.app/"
@@ -252,7 +252,7 @@ export default function Home() {
       title: "Luna Pierce - Creative Portfolio",
       description: "Stunning creative portfolio showcasing photography, design, and digital art with elegant animations.",
       image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=400&fit=crop",
-      tech: ["Next.js", "Tailwind", "Framer Motion"],
+      tech: ["Next.js", "Tailwind", "Responsive"],
       status: "Live Site",
       gradient: "from-pink-400 to-violet-400",
       url: "https://luna-pierce.vercel.app/"
