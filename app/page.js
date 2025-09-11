@@ -1108,7 +1108,7 @@ export default function Home() {
           </p>
           <div className="border-t border-slate-800 pt-8">
             <p className="text-slate-500">
-              © 2024 MonishDev. All rights reserved. Built with passion and precision.
+              © 2025 MonishDev. All rights reserved. Built with passion and precision.
             </p>
           </div>
         </div>
