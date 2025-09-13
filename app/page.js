@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
-import { ChevronDown, Code, Smartphone, Zap, Mail, Phone, MapPin, Github, Linkedin, ExternalLink, CheckCircle, Star, ArrowRight, Sparkles, Sun, Moon, Menu, X } from 'lucide-react';
+import { ChevronDown, Code, Smartphone, Zap, Mail, Phone, MapPin, ExternalLink, CheckCircle, Star, ArrowRight, Sparkles, Sun, Moon, Menu, X } from 'lucide-react';
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState({});
@@ -903,46 +903,6 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <div className="mt-10 pt-8 border-t border-violet-200">
-                  <h4 
-                    className="font-bold text-lg mb-4"
-                    style={{ color: theme === 'dark' ? '#f1f5f9' : '#1e293b' }}
-                  >
-                    Follow the Journey
-                  </h4>
-                  <div className="flex space-x-4">
-                    <a 
-                      href="https://github.com/monish-j" 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border"
-                      style={{
-                        backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
-                        borderColor: theme === 'dark' ? '#475569' : '#cbd5e1'
-                      }}
-                    >
-                      <Github 
-                        className="w-5 h-5"
-                        style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
-                      />
-                    </a>
-                    <a 
-                      href="https://www.linkedin.com/in/monish-494147213/" 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border"
-                      style={{
-                        backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
-                        borderColor: theme === 'dark' ? '#475569' : '#cbd5e1'
-                      }}
-                    >
-                      <Linkedin 
-                        className="w-5 h-5"
-                        style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }}
-                      />
-                    </a>
-                  </div>
-                </div>
               </div>
             </div>
             
