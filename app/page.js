@@ -256,6 +256,15 @@ export default function Home() {
       status: "Live Site",
       gradient: "from-pink-400 to-violet-400",
       url: "https://luna-pierce.vercel.app/"
+    },
+    {
+      title: "Business Analytics Dashboard",
+      description: "Interactive business dashboard featuring charts, KPIs, and data visualization for business intelligence applications.",
+      image: "https://images.pexels.com/photos/95916/pexels-photo-95916.jpeg?w=600&h=400&fit=crop",
+      tech: ["Next.js", "Recharts", "Analytics", "Responsive"],
+      status: "Live Site",
+      gradient: "from-emerald-400 to-cyan-400",
+      url: "https://business-analytics-dashboard-nine.vercel.app/"
     }
   ];
 
